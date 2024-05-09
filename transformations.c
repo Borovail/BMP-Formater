@@ -134,44 +134,7 @@ struct bmp_image *rotate_left(const struct bmp_image *image)
 
      return new_image;
 }
-// some  troobles with visual studio code i guess, default fuctions ceil, floor and round are not working
-// double ceil(double x)
-// {
-//      int i = (int)x; // Преобразуем в целое число, отбрасывая дробную часть
-//      if (x == (double)i || x < 0)
-//      {
-//           return i;
-//      }
-//      else
-//      {
-//           return i + 1; // Если была дробная часть, прибавляем 1
-//      }
-// }
 
-// double floor(double x)
-// {
-//      int i = (int)x; // Преобразуем в целое число, отбрасывая дробную часть
-//      if (x == (double)i || x >= 0)
-//      {
-//           return i;
-//      }
-//      else
-//      {
-//           return i - 1; // Если была дробная часть и число отрицательное, вычитаем 1
-//      }
-// }
-
-// double round(double x)
-// {
-//      if (x < 0.0)
-//      {
-//           return ceil(x - 0.5);
-//      }
-//      else
-//      {
-//           return floor(x + 0.5);
-//      }
-// }
 
 struct bmp_image *scale(const struct bmp_image *image, float factor)
 {
@@ -232,60 +195,25 @@ struct bmp_image *crop(const struct bmp_image *image, const uint32_t start_y, co
      return new_image;
 }
 
-bool is_color_to_keep_input_correct(const char *colors_to_keep)
-{
-     if (colors_to_keep == NULL || strlen(colors_to_keep) == 0)
-     {
-          return false;
-     }
-
-     bool seen_r = false, seen_g = false, seen_b = false;
-
-     while (*colors_to_keep)
-     {
-          ////refactor this code
-          switch (*colors_to_keep)
-          {
-          case 'r':
-               if (seen_r)
-                    return false;
-               seen_r = true;
-               break;
-          case 'g':
-               if (seen_g)
-                    return false;
-               seen_g = true;
-               break;
-          case 'b':
-               if (seen_b)
-                    return false;
-               seen_b = true;
-               break;
-          default:
-               return false;
-          }
-          colors_to_keep++;
-     }
-
-     return true;
-}
 
 struct bmp_image *extract(const struct bmp_image *image, const char *colors_to_keep)
 {
      if (image == NULL || image->header == NULL || image->data == NULL)
           return NULL;
 
+     bool keep_red = strchr(colors_to_keep, 'r') != NULL;
+     bool keep_green = strchr(colors_to_keep, 'g') != NULL;
+     bool keep_blue = strchr(colors_to_keep, 'b') != NULL;
+
+     if(!keep_red && !keep_green && !keep_blue)
+     {
+          return NULL;
+     }
+     
      struct bmp_image *new_image = init_image_from(image, image->header->width, image->header->height);
 
      if (new_image == NULL)
           return NULL;
-
-     if (!is_color_to_keep_input_correct(colors_to_keep))
-          return NULL;
-
-     bool keep_red = strchr(colors_to_keep, 'r') != NULL;
-     bool keep_green = strchr(colors_to_keep, 'g') != NULL;
-     bool keep_blue = strchr(colors_to_keep, 'b') != NULL;
 
      for (size_t y = 0; y < image->header->height; y++)
      {
