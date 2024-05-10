@@ -275,3 +275,40 @@ struct bmp_image *extract(const struct bmp_image *image, const char *colors_to_k
 
 
 
+//Add a function to control brightness
+
+struct bmp_image *brightness(const struct bmp_image *image, float factor)
+{
+     LOG_INFO("Changing brightness of image %p by factor %f\n", (void *)image, factor);
+
+     if (!image || !image->header || !image->data)
+     {
+          LOG_WARNING("Image or header or data is NULL\n");
+          return NULL;
+     }
+
+     struct bmp_image *new_image = create_image_with(image->header, image->header->width, image->header->height);
+
+     if (!new_image)
+     {
+          LOG_ERROR("Failed to initialize new image\n");
+          return NULL;
+     }
+
+     for (size_t y = 0; y < image->header->height; y++)
+     {
+          for (size_t x = 0; x < image->header->width; x++)
+          {
+               size_t index = y * image->header->width + x;
+               new_image->data[index].red = (uint8_t)round((float)image->data[index].red * factor);
+               new_image->data[index].green = (uint8_t)round((float)image->data[index].green * factor);
+               new_image->data[index].blue = (uint8_t)round((float)image->data[index].blue * factor);
+          }
+     }
+
+     LOG_INFO("Brightness changed successfully\n");
+     return new_image;
+}
+
+
+
