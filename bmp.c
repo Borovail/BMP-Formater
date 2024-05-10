@@ -80,19 +80,31 @@ struct pixel *read_data(FILE *stream, const struct bmp_header *header)
    uint8_t *current_position = (uint8_t *)data;
    for (size_t y = 0; y < height; y++)
    {
-      if (fread(current_position, 1, line_size, stream) != line_size)
+      for (size_t x = 0; x < width; x++)
       {
-         LOG_ERROR("Failed to read the data\n");
-         free(data);
-         return NULL;
+          if (header->bpp == 32) {
+              if (fread(current_position, 1, 4, stream) != 4) {
+                  LOG_ERROR("Failed to read the data\n");
+                  free(data);
+                  return NULL;
+              }
+          } else {
+              if (fread(current_position, 1, 3, stream) != 3) {
+                  LOG_ERROR("Failed to read the data\n");
+                  free(data);
+                  return NULL;
+              }
+              current_position[3] = 255; 
+          }
+          current_position += bytes_per_pixel;
       }
-      current_position += line_size;
       fseek(stream, padding, SEEK_CUR);
    }
 
    LOG_INFO("BMP data read successfully\n");
    return data;
 }
+
 
 struct bmp_image *read_bmp(FILE *stream)
 {
@@ -132,6 +144,7 @@ struct bmp_image *read_bmp(FILE *stream)
 
    image->header = header;
    image->data = data;
+   image->has_alpha = header->bpp == 32;
 
    LOG_INFO("BMP image read successfully\n");
    return image;
@@ -169,19 +182,19 @@ bool write_bmp(FILE *stream, const struct bmp_image *image)
 
    uint32_t width = header->width, height = header->height;
 
-   size_t bytes_per_pixel = (int)header->bpp / 8;
-   size_t line_size = (size_t)width * (size_t)bytes_per_pixel;
+   size_t bytes_per_pixel = header->bpp / 8;
+   size_t line_size = width * bytes_per_pixel;
    size_t padding = (4 - (line_size) % 4) % 4;
 
-   uint8_t *current_possition = (uint8_t *)image->data;
-   for (size_t i = 0; i < (size_t)height; i++)
+   uint8_t *current_position = (uint8_t *)image->data;
+   for (size_t i = 0; i < height; i++)
    {
-      if (fwrite(current_possition, 1, line_size, stream) != line_size)
+      if (fwrite(current_position, 1, line_size, stream) != line_size)
       {
          LOG_ERROR("Failed to write the data\n");
          return false;
       }
-      current_possition += line_size;
+      current_position += line_size;
       for (size_t j = 0; j < padding; j++)
       {
          if (fputc(0, stream) == EOF)
@@ -195,6 +208,7 @@ bool write_bmp(FILE *stream, const struct bmp_image *image)
    LOG_INFO("BMP image written successfully\n");
    return true;
 }
+
 
 struct bmp_image *create_image_with(const struct bmp_header *header, uint32_t new_width, uint32_t new_height)
 {
@@ -257,6 +271,8 @@ void display_image_info(const struct bmp_image *image)
 
    LOG_INFO("BMP image info displayed successfully\n");
 }
+
+
 
 void free_bmp_image(struct bmp_image *image)
 {

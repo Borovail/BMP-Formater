@@ -52,6 +52,7 @@ struct bmp_image
 {
     struct bmp_header *header;
     struct pixel *data; // nr. of pixels is `width` * `height`
+    bool has_alpha;
 };
 
 /**

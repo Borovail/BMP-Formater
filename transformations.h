@@ -86,4 +86,18 @@ struct bmp_image *extract(const struct bmp_image *image, const char *colors_to_k
  */
 struct bmp_image *brightness(const struct bmp_image *image, float factor);
 
+
+
+/**
+ * Change contrast of image.
+ *
+ * Creates copy of image with changed contrast.
+ *
+ * @arg image the image
+ * @arg factor the factor by which the contrast is changed, factor > 1 image has higher contrast, factor < 1 image has lower contrast
+ * @return the copy of image with changed contrast or null, if there is no image (NULL given)
+ */
+struct bmp_image *transparency(const struct bmp_image *image, float factor);
+
+
 #endif
