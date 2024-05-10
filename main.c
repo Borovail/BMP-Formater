@@ -9,13 +9,13 @@
 
 int main()
 {
-    FILE *stream = fopen("assets/adventurer.bmp", "rb");
+    FILE *stream = fopen("assets/lenna.bmp", "rb");
     if (!stream)
     {
-        LOG_ERROR("Error opening file 'adventurer.bmp'\n");
+        LOG_ERROR("Error opening file 'lenna.bmp'\n");
         return EXIT_FAILURE;
     }
-    LOG_INFO("File 'adventurer.bmp' opened successfully\n");
+    LOG_INFO("File 'lenna.bmp' opened successfully\n");
 
     struct bmp_image *image = read_bmp(stream);
     if (!image)
@@ -25,6 +25,8 @@ int main()
         return EXIT_FAILURE;
     }
 
+    struct bmp_image *cropped_image = crop(image, 0, 0, 200, 200);
+
     FILE *stream1 = fopen("result.bmp", "wb");
     if (!stream)
     {
@@ -33,7 +35,7 @@ int main()
     }
     LOG_INFO("File 'result.bmp' opened successfully\n");
 
-    if(write_bmp(stream1, image) == false)
+    if (write_bmp(stream1, cropped_image) == false)
     {
         LOG_ERROR("Failed to write BMP image\n");
         fclose(stream1);
