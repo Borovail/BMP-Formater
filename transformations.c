@@ -1,38 +1,40 @@
-#include "transformations.h"
-#include "log.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
 #include <string.h>
+
+#include "transformations.h"
+#include "log.h"
+
 
 struct bmp_image *init_image_from(const struct bmp_image *image, size_t new_width, size_t new_height)
 {
      LOG_INFO("Initializing new image from image %p with new width %zu and new height %zu\n", (void *)image, new_width, new_height);
 
      struct bmp_image *new_image = (struct bmp_image *)malloc(sizeof(struct bmp_image));
-     if (new_image == NULL){
+     if (!new_image){
           LOG_ERROR("Memory allocation failed\n");
+          return NULL;
      }
 
      new_image->header = (struct bmp_header *)malloc(sizeof(struct bmp_header));
-     if (new_image->header == NULL)
+     if (!new_image->header)
      {
           LOG_ERROR("Memory allocation failed\n");
           free(new_image);
           return NULL;
      }
+
      *new_image->header = *image->header;
      new_image->header->width = (uint32_t)new_width;
      new_image->header->height = (uint32_t)new_height;
 
-     
      size_t row_size = (new_width * sizeof(struct pixel) + 3) & ~3; 
      new_image->header->image_size = row_size * new_height;        
-
      new_image->header->size = 54 + new_image->header->image_size; 
 
-     new_image->data = (struct pixel *)malloc(new_image->header->width * new_image->header->height * sizeof(struct pixel));
-     if (new_image->data == NULL)
+     new_image->data = (struct pixel *)malloc(new_width * new_height * sizeof(struct pixel));
+     if (!new_image->data)
      {
           LOG_ERROR("Memory allocation failed\n");
           free(new_image->header);
@@ -71,13 +73,15 @@ size_t rotate_left_index(size_t x, size_t y, size_t width, size_t height)
 
 void rotate(const struct bmp_image *source_image, struct bmp_image *output_image, index_transformer transformer)
 {
+     uint32_t width = source_image->header->width,height = source_image->header->height;
      size_t left_index = 0, index = 0;
-     for (size_t y = 0; y < source_image->header->height; y++)
+
+     for (size_t y = 0; y < height; y++)
      {
-          for (size_t x = 0; x < source_image->header->width; x++)
+          for (size_t x = 0; x < width; x++)
           {
-               left_index = y * source_image->header->width + x;
-               index = transformer(x, y, source_image->header->width, source_image->header->height);
+               left_index = y * width + x;
+               index = transformer(x, y, width, height);
                output_image->data[left_index] = source_image->data[index];
           }
      }
@@ -87,14 +91,14 @@ struct bmp_image *flip_horizontally(const struct bmp_image *image)
 {
      LOG_INFO("Flipping image %p horizontally\n", (void *)image);
 
-     if (image == NULL || image->header == NULL || image->data == NULL){
+     if (!image || !image->header || !image->data ){
           LOG_WARNING("Image or header or data is NULL\n");
           return NULL;
      }
 
      struct bmp_image *new_image = init_image_from(image, image->header->width, image->header->height);
 
-     if (new_image == NULL){
+     if (!new_image){
           LOG_ERROR("Failed to initialize new image\n");
           return NULL;
      }
@@ -110,14 +114,14 @@ struct bmp_image *flip_vertically(const struct bmp_image *image)
 {
      LOG_INFO("Flipping image %p vertically\n", (void *)image);
 
-     if (image == NULL || image->header == NULL || image->data == NULL){
+     if (!image || !image->header || !image->data){
           LOG_WARNING("Image or header or data is NULL\n");
           return NULL;
      }
 
      struct bmp_image *new_image = init_image_from(image, image->header->width, image->header->height);
 
-     if (new_image == NULL){
+     if (!new_image){
           LOG_ERROR("Failed to initialize new image\n");
           return NULL;
      }
@@ -132,14 +136,14 @@ struct bmp_image *rotate_right(const struct bmp_image *image)
 {
      LOG_INFO("Rotating image %p right\n", (void *)image);
      
-     if (image == NULL || image->header == NULL || image->data == NULL){
+     if (!image|| !image->header || !image->data ){
           LOG_WARNING("Image or header or data is NULL\n");
           return NULL;
      }
 
      struct bmp_image *new_image = init_image_from(image, image->header->height, image->header->width);
 
-     if (new_image == NULL){
+     if (!new_image){
           LOG_ERROR("Failed to initialize new image\n");
           return NULL;
      }
@@ -154,14 +158,14 @@ struct bmp_image *rotate_left(const struct bmp_image *image)
 {
      LOG_INFO("Rotating image %p left\n", (void *)image);
 
-     if (image == NULL || image->header == NULL || image->data == NULL){
+     if (!image || !image->header  || !image->data ){
           LOG_WARNING("Image or header or data is NULL\n");
           return NULL;
      }
 
      struct bmp_image *new_image = init_image_from(image, image->header->height, image->header->width);
 
-     if (new_image == NULL){
+     if (!new_image){
           LOG_ERROR("Failed to initialize new image\n");
           return NULL;
      }
@@ -177,7 +181,7 @@ struct bmp_image *scale(const struct bmp_image *image, float factor)
 {
      LOG_INFO("Scaling image %p by factor %f\n", (void *)image, factor);
 
-     if (factor <= 0 || image == NULL || image->header == NULL || image->data == NULL){
+     if (factor <= 0 || !image || !image->header || !image->data){
           LOG_WARNING("Factor is less than or equal to 0 or image or header or data is NULL\n");
           return NULL;
      }
@@ -187,11 +191,12 @@ struct bmp_image *scale(const struct bmp_image *image, float factor)
 
      struct bmp_image *new_image = init_image_from(image, new_width, new_height);
 
-     if (new_image == NULL){
+     if (!new_image ){
           LOG_ERROR("Failed to initialize new image\n");
           return NULL;
      }
 
+     //refactor using a base function
      size_t original_x = 0, original_y = 0;
      for (size_t new_y = 0; new_y < new_image->header->height; new_y++)
      {
@@ -206,6 +211,7 @@ struct bmp_image *scale(const struct bmp_image *image, float factor)
                new_image->data[new_y * new_image->header->width + new_x] = image->data[original_y * image->header->width + original_x];
           }
      }
+     //refactor using a base function
 
      LOG_INFO("Image scaled successfully\n");
      return new_image;
@@ -215,7 +221,7 @@ struct bmp_image *crop(const struct bmp_image *image, const uint32_t start_y, co
                        const uint32_t height, const uint32_t width)
 {
      LOG_INFO("Cropping image %p with start_x %u, start_y %u, height %u, width %u\n", (void *)image, start_x, start_y, height, width);
-     if (image == NULL || image->header == NULL || image->data == NULL){
+     if (!image  || !image->header || !image->data){
           LOG_WARNING("Image or header or data is NULL\n");
           return NULL;
      }
@@ -227,11 +233,12 @@ struct bmp_image *crop(const struct bmp_image *image, const uint32_t start_y, co
 
      struct bmp_image *new_image = init_image_from(image, width, height);
 
-     if (new_image == NULL){
+     if (!new_image){
           LOG_ERROR("Failed to initialize new image\n");
           return NULL;
      }
 
+     //refactor using a base function
      size_t left_index = 0, index = 0;
      for (size_t y = start_y; y < start_y + height; y++)
      {
@@ -242,6 +249,7 @@ struct bmp_image *crop(const struct bmp_image *image, const uint32_t start_y, co
                new_image->data[left_index] = image->data[index];
           }
      }
+     //refactor using a base function
 
      LOG_INFO("Image cropped successfully\n");
      return new_image;
@@ -252,8 +260,8 @@ struct bmp_image *extract(const struct bmp_image *image, const char *colors_to_k
 {
      LOG_INFO("Extracting colors %s from image %p\n", colors_to_keep, (void *)image);
 
-     if (image == NULL || image->header == NULL || image->data == NULL){
-          LOG_WARNING("Image or header or data is NULL\n");
+     if (!image || !image->header || !image->data || !colors_to_keep){
+          LOG_WARNING("Image or header or data or colors to keep is NULL\n");
           return NULL;
      }
 
@@ -269,11 +277,12 @@ struct bmp_image *extract(const struct bmp_image *image, const char *colors_to_k
      
      struct bmp_image *new_image = init_image_from(image, image->header->width, image->header->height);
 
-     if (new_image == NULL){
+     if (!new_image){
           LOG_ERROR("Failed to initialize new image\n");
           return NULL;
      }
 
+     //refactor using a base function
      for (size_t y = 0; y < image->header->height; y++)
      {
           for (size_t x = 0; x < image->header->width; x++)
@@ -284,6 +293,7 @@ struct bmp_image *extract(const struct bmp_image *image, const char *colors_to_k
                new_image->data[index].blue = keep_blue ? image->data[index].blue : 0;
           }
      }
+     //refactor using a base function
 
      LOG_INFO("Colors extracted successfully\n");
      return new_image;

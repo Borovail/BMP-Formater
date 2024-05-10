@@ -1,10 +1,11 @@
+#include <stdlib.h>
+#include <stdio.h>
+#include <stdio.h>
+#include <stdlib.h>
+
 #include "bmp.h"
 #include "transformations.h"
 #include "log.h"
-#include <stdlib.h>
-#include <stdio.h>
-#include <stdio.h>
-#include <stdlib.h>
 
 int main()
 {
