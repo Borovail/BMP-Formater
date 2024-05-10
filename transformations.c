@@ -346,15 +346,16 @@ struct bmp_image *transparency(const struct bmp_image *image, float factor)
      }
 
      for (size_t y = 0; y < image->header->height; y++)
-     {
-          for (size_t x = 0; x < image->header->width; x++)
-          {
-               size_t index = y * image->header->width + x;
-               new_image->data[index].red = (uint8_t)round((float)image->data[index].red * factor);
-               new_image->data[index].green = (uint8_t)round((float)image->data[index].green * factor);
-               new_image->data[index].blue = (uint8_t)round((float)image->data[index].blue * factor);
-          }
-     }
+    {
+        for (size_t x = 0; x < image->header->width; x++)
+        {
+            size_t index = y * image->header->width + x;
+          //   new_image->data[index].alpha = (uint8_t)fmin(255, round((float)image->data[index].alpha * factor));
+            new_image->data[index].red = image->data[index].red;
+            new_image->data[index].green = image->data[index].green;
+            new_image->data[index].blue = image->data[index].blue;
+        }
+    }
 
      LOG_INFO("Transparency changed successfully\n");
      return new_image;

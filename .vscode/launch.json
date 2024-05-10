@@ -5,7 +5,7 @@
       "name": "C/C++ Runner: Debug Session",
       "type": "cppdbg",
       "request": "launch",
-      "args": [],
+      "args": ["-i","assets/adventurer.bmp", "--rotate", "left", "-o", "result.bmp"],
       "stopAtEntry": false,
       "externalConsole": false,
       "cwd": "/home/BMP-Formater",

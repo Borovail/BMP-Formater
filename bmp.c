@@ -260,15 +260,15 @@ void display_image_info(const struct bmp_image *image)
       return;
    }
 
-   fprintf(stderr,"BMP image info:\n");
-   fprintf(stderr,"  - type: %c%c\n", (char)(image->header->type & 0xFF), (char)(image->header->type >> 8));
-   fprintf(stderr,"  - size: %u\n", image->header->size);
-   fprintf(stderr,"  - offset: %u\n", image->header->offset);
-   fprintf(stderr,"  - width: %u\n", image->header->width);
-   fprintf(stderr,"  - height: %u\n", image->header->height);
-   fprintf(stderr,"  - bpp: %u\n", image->header->bpp);
-   fprintf(stderr,"  - image size: %u\n", image->header->image_size);
-
+   printf("BMP image info:\n");
+   printf("  - type: %c%c\n", (char)(image->header->type & 0xFF), (char)(image->header->type >> 8));
+   printf("  - size: %u\n", image->header->size);
+   printf("  - offset: %u\n", image->header->offset);
+   printf("  - width: %u\n", image->header->width);
+   printf("  - height: %u\n", image->header->height);
+   printf("  - bpp: %u\n", image->header->bpp);
+   printf("  - image size: %u\n", image->header->image_size);
+   printf("  - alpha channel: %s\n", image->has_alpha ? "yes" : "no");
    LOG_INFO("BMP image info displayed successfully\n");
 }
 
