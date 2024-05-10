@@ -95,6 +95,7 @@ struct bmp_image *flip_vertically(const struct bmp_image *image)
      return new_image;
 }
 
+
 struct bmp_image *rotate_right(const struct bmp_image *image)
 {
      LOG_INFO("Rotating image %p right\n", (void *)image);
@@ -119,6 +120,7 @@ struct bmp_image *rotate_right(const struct bmp_image *image)
      return new_image;
 }
 
+
 struct bmp_image *rotate_left(const struct bmp_image *image)
 {
      LOG_INFO("Rotating image %p left\n", (void *)image);
@@ -137,7 +139,7 @@ struct bmp_image *rotate_left(const struct bmp_image *image)
           return NULL;
      }
 
-     transform(image, new_image, rotate_left_index);
+    transform(image, new_image, rotate_left_index);
 
      LOG_INFO("Image rotated left successfully\n");
      return new_image;
