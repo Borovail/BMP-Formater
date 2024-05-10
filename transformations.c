@@ -143,6 +143,11 @@ struct bmp_image *rotate_left(const struct bmp_image *image)
      return new_image;
 }
 
+
+
+
+
+
 struct bmp_image *scale(const struct bmp_image *image, float factor)
 {
      LOG_INFO("Scaling image %p by factor %f\n", (void *)image, factor);
@@ -153,7 +158,6 @@ struct bmp_image *scale(const struct bmp_image *image, float factor)
           return NULL;
      }
 
-     // Преобразуем результаты умножения и округления к типу uint32_t
      uint32_t new_width = (uint32_t)round((float)image->header->width * factor);
      uint32_t new_height = (uint32_t)round((float)image->header->height * factor);
 
@@ -165,16 +169,13 @@ struct bmp_image *scale(const struct bmp_image *image, float factor)
           return NULL;
      }
 
-     // Цикл для заполнения нового изображения
      for (size_t new_y = 0; new_y < new_height; new_y++)
      {
           for (size_t new_x = 0; new_x < new_width; new_x++)
           {
-               // Явное преобразование size_t к float перед делением
                size_t original_x = (size_t)round((float)new_x / factor);
                size_t original_y = (size_t)round((float)new_y / factor);
 
-               // Убедитесь, что индексы не выходят за границы
                original_x = (original_x >= image->header->width) ? image->header->width - 1 : original_x;
                original_y = (original_y >= image->header->height) ? image->header->height - 1 : original_y;
 
@@ -271,3 +272,6 @@ struct bmp_image *extract(const struct bmp_image *image, const char *colors_to_k
      LOG_INFO("Colors extracted successfully\n");
      return new_image;
 }
+
+
+

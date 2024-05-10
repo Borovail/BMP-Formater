@@ -237,6 +237,27 @@ struct bmp_image *create_image_with(const struct bmp_header *header, uint32_t ne
    return new_image;
 }
 
+void display_image_info(const struct bmp_image *image)
+{
+   LOG_INFO("Displaying BMP image info %p\n", (void *)image);
+   if (!image || !image->header)
+   {
+      LOG_WARNING("Image or header is NULL\n");
+      return;
+   }
+
+   fprintf(stderr,"BMP image info:\n");
+   fprintf(stderr,"  - type: %c%c\n", (char)(image->header->type & 0xFF), (char)(image->header->type >> 8));
+   fprintf(stderr,"  - size: %u\n", image->header->size);
+   fprintf(stderr,"  - offset: %u\n", image->header->offset);
+   fprintf(stderr,"  - width: %u\n", image->header->width);
+   fprintf(stderr,"  - height: %u\n", image->header->height);
+   fprintf(stderr,"  - bpp: %u\n", image->header->bpp);
+   fprintf(stderr,"  - image size: %u\n", image->header->image_size);
+
+   LOG_INFO("BMP image info displayed successfully\n");
+}
+
 void free_bmp_image(struct bmp_image *image)
 {
    LOG_INFO("Freeing BMP image %p\n", (void *)image);
