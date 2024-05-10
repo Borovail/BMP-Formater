@@ -15,7 +15,8 @@
     "-Wcast-align",
     "-Wconversion",
     "-Wsign-conversion",
-    "-Wnull-dereference"
+    "-Wnull-dereference",
+    
   ],
   "C_Cpp_Runner.msvcWarnings": [
     "/W4",
@@ -35,8 +36,8 @@
   ],
   "C_Cpp_Runner.enableWarnings": true,
   "C_Cpp_Runner.warningsAsError": false,
-  "C_Cpp_Runner.compilerArgs": [],
-  "C_Cpp_Runner.linkerArgs": [],
+  "C_Cpp_Runner.compilerArgs": ["-DDEBUG",],
+  "C_Cpp_Runner.linkerArgs": ["-lm",],
   "C_Cpp_Runner.includePaths": [],
   "C_Cpp_Runner.includeSearch": [
     "*",

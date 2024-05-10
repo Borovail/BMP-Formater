@@ -2,7 +2,7 @@
 CC = gcc
 
 # Flags for compiler
-CFLAGS = -std=c11 -Wall -Werror -Wconversion -lm -I. -D_POSIX_C_SOURCE=200809L -DDEBUG -DDETAILED_DEBUG
+CFLAGS = -std=c11 -Wall -Wconversion -lm -I. -D_POSIX_C_SOURCE=200809L -DDEBUG
 
 # Directories
 BUILD_DIR = build
