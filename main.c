@@ -13,6 +13,7 @@ void print_usage()
     printf("Usage: bmp [OPTION]... [FILE]...\n");
     printf("Simple BMP transformation tool.\n");
     printf("\nOptions:\n");
+    printf("  -d, --info                    Displays image information\n");
     printf("  -r, --rotate <l|r>            Rotate image left or right\n");
     printf("  -f, --flip <h|v>              Flip image horizontally or vertically\n");
     printf("  -c, --crop <y,x,h,w>          Crop image from position [y,x] with height h and width w\n");
@@ -43,6 +44,7 @@ int main(int argc, char *argv[])
 
     int opt;
     static struct option long_options[] = {
+        {"display",no_argument, 0, 'd'},
         {"rotate", required_argument, 0, 'r'},
         {"flip", required_argument, 0, 'f'},
         {"crop", required_argument, 0, 'c'},
@@ -98,10 +100,13 @@ int main(int argc, char *argv[])
     }
 
     optind = 1;
-    while ((opt = getopt_long(argc, argv, "r:f:c:s:b:t:o:i:h", long_options, NULL)) != -1)
+    while ((opt = getopt_long(argc, argv, "r:f:c:s:b:t:o:i:hd", long_options, NULL)) != -1)
     {
         switch (opt)
         {
+        case 'd':
+            display_image_info(image);
+            break;
         case 'r':
             if (strcmp(optarg, "l") == 0 || strcmp(optarg, "left") == 0)
                 temp_image = rotate_left(image);
@@ -187,7 +192,6 @@ int main(int argc, char *argv[])
 
     if (!output_file)
         output_file = "output.bmp";
-    
 
     output_stream = fopen(output_file, "wb");
     if (!output_stream)
@@ -207,8 +211,6 @@ int main(int argc, char *argv[])
     return EXIT_SUCCESS;
 }
 
-
-//test
 // #include <stdio.h>
 // #include <stdlib.h>
 // #include <string.h>
@@ -220,7 +222,8 @@ int main(int argc, char *argv[])
 // #include "log.h"
 
 // int main(){
-//     FILE *input_stream = fopen("assets/freddy.bmp", "rb");
+
+//     FILE *input_stream = fopen("assets/lenna.bmp", "rb");
 //     struct bmp_image *image = read_bmp(input_stream);
 //     display_image_info(image);
 //     struct bmp_image *temp_image = rotate_left(image);
