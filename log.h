@@ -11,9 +11,9 @@
 #define ANSI_COLOR_RED "\x1b[31m"
 #define ANSI_COLOR_RESET "\x1b[0m"
 
-#define LOG_INFO(format, ...) printf( ANSI_COLOR_BLUE "INFO: [%s:%d] %s: " format ANSI_COLOR_RESET "\n", __FILE__, __LINE__, __func__, ##__VA_ARGS__)
-#define LOG_WARNING(format, ...) printf( ANSI_COLOR_YELLOW "WARNING: [%s:%d] %s: " format ANSI_COLOR_RESET "\n", __FILE__, __LINE__, __func__, ##__VA_ARGS__)
-#define LOG_ERROR(format, ...) printf( ANSI_COLOR_RED "ERROR: [%s:%d] %s: " format ANSI_COLOR_RESET "\n", __FILE__, __LINE__, __func__, ##__VA_ARGS__)
+#define LOG_INFO(format, ...) printf(ANSI_COLOR_BLUE "INFO: [%s:%d] %s: " format ANSI_COLOR_RESET "\n", __FILE__, __LINE__, __func__, ##__VA_ARGS__)
+#define LOG_WARNING(format, ...) printf(ANSI_COLOR_YELLOW "WARNING: [%s:%d] %s: " format ANSI_COLOR_RESET "\n", __FILE__, __LINE__, __func__, ##__VA_ARGS__)
+#define LOG_ERROR(format, ...) printf(ANSI_COLOR_RED "ERROR: [%s:%d] %s: " format ANSI_COLOR_RESET "\n", __FILE__, __LINE__, __func__, ##__VA_ARGS__)
 
 #else
 // Do nothing if not debugging

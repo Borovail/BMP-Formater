@@ -78,33 +78,20 @@ struct pixel *read_data(FILE *stream, const struct bmp_header *header)
    }
 
    uint8_t *current_position = (uint8_t *)data;
-   for (size_t y = 0; y < height; y++)
+   for (size_t y = 0; y < header->height; y++)
    {
-      for (size_t x = 0; x < width; x++)
+      if (fread(current_position, 1, line_size, stream) != line_size)
       {
-          if (header->bpp == 32) {
-              if (fread(current_position, 1, 4, stream) != 4) {
-                  LOG_ERROR("Failed to read the data\n");
-                  free(data);
-                  return NULL;
-              }
-          } else {
-              if (fread(current_position, 1, 3, stream) != 3) {
-                  LOG_ERROR("Failed to read the data\n");
-                  free(data);
-                  return NULL;
-              }
-              current_position[3] = 255; 
-          }
-          current_position += bytes_per_pixel;
+         free(data);
+         return NULL;
       }
+      current_position += line_size;
       fseek(stream, padding, SEEK_CUR);
    }
 
    LOG_INFO("BMP data read successfully\n");
    return data;
 }
-
 
 struct bmp_image *read_bmp(FILE *stream)
 {
@@ -144,7 +131,6 @@ struct bmp_image *read_bmp(FILE *stream)
 
    image->header = header;
    image->data = data;
-   image->has_alpha = header->bpp == 32;
 
    LOG_INFO("BMP image read successfully\n");
    return image;
@@ -209,7 +195,6 @@ bool write_bmp(FILE *stream, const struct bmp_image *image)
    return true;
 }
 
-
 struct bmp_image *create_image_with(const struct bmp_header *header, uint32_t new_width, uint32_t new_height)
 {
    LOG_INFO("Initializing new image with header %p, width %u, and height %u\n", (void *)header, new_width, new_height);
@@ -268,11 +253,8 @@ void display_image_info(const struct bmp_image *image)
    printf("  - height: %u\n", image->header->height);
    printf("  - bpp: %u\n", image->header->bpp);
    printf("  - image size: %u\n", image->header->image_size);
-   printf("  - alpha channel: %s\n", image->has_alpha ? "yes" : "no");
    LOG_INFO("BMP image info displayed successfully\n");
 }
-
-
 
 void free_bmp_image(struct bmp_image *image)
 {

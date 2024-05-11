@@ -44,19 +44,18 @@ int main(int argc, char *argv[])
 
     int opt;
     static struct option long_options[] = {
-        {"display",no_argument, 0, 'd'},
+        {"display", no_argument, 0, 'd'},
         {"rotate", required_argument, 0, 'r'},
         {"flip", required_argument, 0, 'f'},
         {"crop", required_argument, 0, 'c'},
         {"scale", required_argument, 0, 's'},
         {"brightness", required_argument, 0, 'b'},
-        {"transparency", required_argument, 0, 't'},
         {"output", required_argument, 0, 'o'},
         {"input", required_argument, 0, 'i'},
         {"help", no_argument, 0, 'h'},
         {0, 0, 0, 0}};
 
-    while ((opt = getopt_long(argc, argv, "r:f:c:s:b:t:o:i:h", long_options, NULL)) != -1)
+    while ((opt = getopt_long(argc, argv, "r:f:c:s:b:o:i:h", long_options, NULL)) != -1)
     {
         switch (opt)
         {
@@ -100,7 +99,7 @@ int main(int argc, char *argv[])
     }
 
     optind = 1;
-    while ((opt = getopt_long(argc, argv, "r:f:c:s:b:t:o:i:hd", long_options, NULL)) != -1)
+    while ((opt = getopt_long(argc, argv, "r:f:c:s:b:o:i:hd", long_options, NULL)) != -1)
     {
         switch (opt)
         {
@@ -181,12 +180,6 @@ int main(int argc, char *argv[])
             free_bmp_image(image);
             image = temp_image;
             break;
-        case 't':
-            temp_image = transparency(image, (float)atof(optarg));
-
-            free_bmp_image(image);
-            image = temp_image;
-            break;
         }
     }
 
@@ -210,29 +203,3 @@ int main(int argc, char *argv[])
     LOG_INFO("Program finished successfully");
     return EXIT_SUCCESS;
 }
-
-// #include <stdio.h>
-// #include <stdlib.h>
-// #include <string.h>
-// #include <getopt.h>
-// #include <stdbool.h>
-
-// #include "bmp.h"
-// #include "transformations.h"
-// #include "log.h"
-
-// int main(){
-
-//     FILE *input_stream = fopen("assets/lenna.bmp", "rb");
-//     struct bmp_image *image = read_bmp(input_stream);
-//     display_image_info(image);
-//     struct bmp_image *temp_image = rotate_left(image);
-//     display_image_info(temp_image);
-//     FILE *output_stream = fopen("output.bmp", "wb");
-//     write_bmp(output_stream, temp_image);
-//     fclose(input_stream);
-//     fclose(output_stream);
-//     free_bmp_image(image);
-//     // free_bmp_image(temp_image);
-//     return 0;
-// }
