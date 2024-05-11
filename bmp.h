@@ -52,7 +52,6 @@ struct bmp_image
 {
     struct bmp_header *header;
     struct pixel *data; // nr. of pixels is `width` * `height`
-    bool has_alpha;
 };
 
 /**
@@ -124,7 +123,6 @@ struct bmp_image *create_image_with(const struct bmp_header *header, uint32_t ne
  */
 void free_bmp_image(struct bmp_image *image);
 
-
 /**
  * Display image information
  *
@@ -133,6 +131,5 @@ void free_bmp_image(struct bmp_image *image);
  * @param image the BMP image object
  */
 void display_image_info(const struct bmp_image *image);
-
 
 #endif

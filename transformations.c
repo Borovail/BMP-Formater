@@ -143,11 +143,6 @@ struct bmp_image *rotate_left(const struct bmp_image *image)
      return new_image;
 }
 
-
-
-
-
-
 struct bmp_image *scale(const struct bmp_image *image, float factor)
 {
      LOG_INFO("Scaling image %p by factor %f\n", (void *)image, factor);
@@ -273,8 +268,6 @@ struct bmp_image *extract(const struct bmp_image *image, const char *colors_to_k
      return new_image;
 }
 
-
-
 struct bmp_image *brightness(const struct bmp_image *image, float factor)
 {
      LOG_INFO("Changing brightness of image %p by factor %f\n", (void *)image, factor);
@@ -285,7 +278,7 @@ struct bmp_image *brightness(const struct bmp_image *image, float factor)
           return NULL;
      }
 
-     if(factor < 0)
+     if (factor < 0)
      {
           LOG_WARNING("Factor is less than 0.\n");
           return NULL;
@@ -313,53 +306,3 @@ struct bmp_image *brightness(const struct bmp_image *image, float factor)
      LOG_INFO("Brightness changed successfully\n");
      return new_image;
 }
-
-
-struct bmp_image *transparency(const struct bmp_image *image, float factor)
-{
-     LOG_INFO("Changing transparency of image %p by factor %f\n", (void *)image, factor);
-
-     if (!image || !image->header || !image->data)
-     {
-          LOG_WARNING("Image or header or data is NULL\n");
-          return NULL;
-     }
-
-     if(factor < 0 || factor > 1)
-     {
-          LOG_WARNING("Factor is out of range(0;1).\n");
-          return NULL;
-     }
-
-     if(!image->has_alpha)
-     {
-          LOG_WARNING("Image does not have alpha channel.\n");
-          return NULL;
-     }
-
-     struct bmp_image *new_image = create_image_with(image->header, image->header->width, image->header->height);
-
-     if (!new_image)
-     {
-          LOG_ERROR("Failed to initialize new image\n");
-          return NULL;
-     }
-
-     for (size_t y = 0; y < image->header->height; y++)
-    {
-        for (size_t x = 0; x < image->header->width; x++)
-        {
-            size_t index = y * image->header->width + x;
-          //   new_image->data[index].alpha = (uint8_t)fmin(255, round((float)image->data[index].alpha * factor));
-            new_image->data[index].red = image->data[index].red;
-            new_image->data[index].green = image->data[index].green;
-            new_image->data[index].blue = image->data[index].blue;
-        }
-    }
-
-     LOG_INFO("Transparency changed successfully\n");
-     return new_image;
-}
-
-
-

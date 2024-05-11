@@ -13,6 +13,7 @@ void print_usage()
     printf("Usage: bmp [OPTION]... [FILE]...\n");
     printf("Simple BMP transformation tool.\n");
     printf("\nOptions:\n");
+    printf("  -d, --info                    Displays image information\n");
     printf("  -r, --rotate <l|r>            Rotate image left or right\n");
     printf("  -f, --flip <h|v>              Flip image horizontally or vertically\n");
     printf("  -c, --crop <y,x,h,w>          Crop image from position [y,x] with height h and width w\n");
@@ -43,18 +44,18 @@ int main(int argc, char *argv[])
 
     int opt;
     static struct option long_options[] = {
+        {"display", no_argument, 0, 'd'},
         {"rotate", required_argument, 0, 'r'},
         {"flip", required_argument, 0, 'f'},
         {"crop", required_argument, 0, 'c'},
         {"scale", required_argument, 0, 's'},
         {"brightness", required_argument, 0, 'b'},
-        {"transparency", required_argument, 0, 't'},
         {"output", required_argument, 0, 'o'},
         {"input", required_argument, 0, 'i'},
         {"help", no_argument, 0, 'h'},
         {0, 0, 0, 0}};
 
-    while ((opt = getopt_long(argc, argv, "r:f:c:s:b:t:o:i:h", long_options, NULL)) != -1)
+    while ((opt = getopt_long(argc, argv, "r:f:c:s:b:o:i:h", long_options, NULL)) != -1)
     {
         switch (opt)
         {
@@ -98,10 +99,13 @@ int main(int argc, char *argv[])
     }
 
     optind = 1;
-    while ((opt = getopt_long(argc, argv, "r:f:c:s:b:t:o:i:h", long_options, NULL)) != -1)
+    while ((opt = getopt_long(argc, argv, "r:f:c:s:b:o:i:hd", long_options, NULL)) != -1)
     {
         switch (opt)
         {
+        case 'd':
+            display_image_info(image);
+            break;
         case 'r':
             if (strcmp(optarg, "l") == 0 || strcmp(optarg, "left") == 0)
                 temp_image = rotate_left(image);
@@ -176,18 +180,11 @@ int main(int argc, char *argv[])
             free_bmp_image(image);
             image = temp_image;
             break;
-        case 't':
-            temp_image = transparency(image, (float)atof(optarg));
-
-            free_bmp_image(image);
-            image = temp_image;
-            break;
         }
     }
 
     if (!output_file)
         output_file = "output.bmp";
-    
 
     output_stream = fopen(output_file, "wb");
     if (!output_stream)

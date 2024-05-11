@@ -15,8 +15,7 @@
     "-Wcast-align",
     "-Wconversion",
     "-Wsign-conversion",
-    "-Wnull-dereference",
-    
+    "-Wnull-dereference"
   ],
   "C_Cpp_Runner.msvcWarnings": [
     "/W4",
@@ -36,8 +35,12 @@
   ],
   "C_Cpp_Runner.enableWarnings": true,
   "C_Cpp_Runner.warningsAsError": false,
-  "C_Cpp_Runner.compilerArgs": ["-DDEBUG",],
-  "C_Cpp_Runner.linkerArgs": ["-lm",],
+  "C_Cpp_Runner.compilerArgs": [
+    "-DDEBUG"
+  ],
+  "C_Cpp_Runner.linkerArgs": [
+    "-lm"
+  ],
   "C_Cpp_Runner.includePaths": [],
   "C_Cpp_Runner.includeSearch": [
     "*",
@@ -56,5 +59,9 @@
   "C_Cpp_Runner.useLeakSanitizer": false,
   "C_Cpp_Runner.showCompilationTime": false,
   "C_Cpp_Runner.useLinkTimeOptimization": false,
-  "C_Cpp_Runner.msvcSecureNoWarnings": false
+  "C_Cpp_Runner.msvcSecureNoWarnings": false,
+  "files.associations": {
+    "MakeFile": "c",
+    "stdio.h": "c"
+  }
 }
